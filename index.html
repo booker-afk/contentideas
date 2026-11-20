@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Alcomy Call Insights</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;0,600;1,800;1,900&display=swap" rel="stylesheet">
+<style>
+:root{--blue:#1aa3ee;--blue-d:#0b6fa8;--pink:#f0397f;--card:#fff;--ink:#0f1b2d;--mute:#52627a;--line:#dbe6f0;--chip:#eaf6fd;--field:#fff;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--card:#14233a;--ink:#eef4fb;--mute:#a7b8cc;--line:#26405f;--chip:#1b3552;--field:#0f1c30}}
+:root[data-theme="dark"]{--card:#14233a;--ink:#eef4fb;--mute:#a7b8cc;--line:#26405f;--chip:#1b3552;--field:#0f1c30}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;font-family:Poppins,system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--ink);background:linear-gradient(135deg,#8fd0f5 0%,#1aa3ee 38%,#0f93e0 100%) fixed;min-height:100vh}
+.wrap{max-width:980px;margin:0 auto;padding:28px 18px 60px}
+.brand{font-weight:600;letter-spacing:.32em;color:#fff;font-size:15px;margin-bottom:18px}
+h1{font-style:italic;font-weight:900;text-transform:uppercase;color:#fff;font-size:clamp(34px,7vw,64px);line-height:1;margin:0 0 10px;text-shadow:0 4px 18px rgba(0,60,120,.25)}
+h1 span{color:var(--pink)}
+.sub{color:#fff;font-weight:500;font-size:clamp(15px,2.4vw,19px);margin:0 0 24px;max-width:640px}
+.card{background:var(--card);border-radius:20px;padding:22px;box-shadow:0 14px 40px rgba(0,50,100,.2);margin-bottom:18px}
+label{font-weight:600;font-size:13px;color:var(--mute);display:block;margin-bottom:6px}
+textarea,select,input{width:100%;font:inherit;font-size:14px;color:var(--ink);background:var(--field);border:1.5px solid var(--line);border-radius:12px;padding:12px}
+textarea{min-height:230px;resize:vertical}
+.help{font-size:13px;line-height:1.6;color:var(--mute);margin:0 0 12px}.help a{color:var(--blue-d);font-weight:600;overflow-wrap:anywhere}input{height:46px}#msg{overflow-wrap:anywhere}
+textarea:focus,select:focus,input:focus{outline:none;border-color:var(--pink)}
+.row{display:flex;gap:14px;flex-wrap:wrap;align-items:end;margin-top:14px}
+.row>div{flex:1 1 220px}
+button{font:inherit;font-weight:600;letter-spacing:.06em;text-transform:uppercase;border:0;border-radius:999px;padding:14px 28px;cursor:pointer;background:var(--pink);color:#fff;box-shadow:0 6px 16px rgba(240,57,127,.35)}
+button:disabled{opacity:.55;cursor:wait}
+button.ghost{background:var(--chip);color:var(--blue-d);box-shadow:none;padding:9px 16px;font-size:12px}
+.tag{display:inline-block;background:var(--pink);color:#fff;font-style:italic;font-weight:800;text-transform:uppercase;font-size:13px;padding:6px 18px 6px 12px;transform:skewX(-10deg);margin:0 0 14px}
+.tag b{display:inline-block;transform:skewX(10deg);font-weight:800}
+.sec h2{margin:0 0 12px;font-size:19px;font-weight:600}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+.item{border:1.5px solid var(--line);border-radius:14px;padding:14px}
+.item h3{margin:0 0 6px;font-size:15px;font-weight:600}
+.item p{margin:0;font-size:13.5px;color:var(--mute);line-height:1.5}
+.q{font-style:italic;border-left:3px solid var(--blue);padding-left:10px;margin-top:8px!important;color:var(--ink)!important}
+.chip{display:inline-block;background:var(--chip);color:var(--blue-d);border-radius:999px;padding:5px 12px;font-size:12.5px;font-weight:500;margin:0 6px 6px 0}
+.fmt{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--pink)}
+.err{color:var(--pink);font-weight:500}
+.bar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+#out{display:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brand">ALCOMY</div>
+  <h1>Call <span>Insights</span></h1>
+  <p class="sub">Paste cold call scripts or transcripts. We’ll pull out what prospects actually said and turn it into content ideas for RCFE and ARF owners.</p>
+
+  <div class="card" aria-label="AI setup">
+    <div class="tag"><b>AI setup</b></div>
+    <p class="help">This GitHub Pages version uses the Gemini API. Get a key from <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener noreferrer">Google AI Studio</a>, then paste it below. Your key is kept in this page's memory only, is not saved, and is sent directly to Google's API when you analyze calls.</p>
+    <label for="apiKey">Your Gemini API key</label>
+    <input id="apiKey" type="password" autocomplete="off" spellcheck="false" placeholder="Paste API key for this session" aria-describedby="keyWarning">
+    <p class="help" id="keyWarning">Never commit an API key to GitHub. Browser-based keys are visible to the person using them; this is intended for individual use, not as a shared team API key. Do not paste identifiable resident, patient, or other sensitive information into transcripts without approval and an appropriate compliant setup.</p>
+  </div>
+
+  <div class="card">
+    <div class="tag"><b>Step by step</b></div>
+    <label for="txt">Call script or transcript (paste several calls, separate them with a blank line and ---)</label>
+    <textarea id="txt" placeholder="Rep: Hi, this is…&#10;Prospect: Honestly we’re still on paper and the med passes are a headache…"></textarea>
+    <div class="row">
+      <div>
+        <label for="aud">Audience for the content</label>
+        <select id="aud">
+          <option>All care settings</option><option>RCFE owners (California)</option><option>ARF / IDD home owners</option><option>Multi-home operators</option><option>Single-home owners</option>
+        </select>
+      </div>
+      <div style="flex:0 0 auto"><button id="go">Extract ideas</button></div>
+    </div>
+    <p id="msg" class="sub" style="color:var(--mute);font-size:13px;margin:12px 0 0"></p>
+  </div>
+
+  <div id="out">
+    <div class="bar"><button class="ghost" id="dl">Download as text</button></div>
+    <div id="res"></div>
+  </div>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+let last=null;
+function el(t,c,x){const e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e}
+// All AI requests are made directly from the user's browser. No key is embedded or stored.
+async function analyzeWithGemini(prompt,key){
+  const endpoint="https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent";
+  const response=await fetch(endpoint,{
+    method:"POST",
+    headers:{"Content-Type":"application/json","x-goog-api-key":key},
+    body:JSON.stringify({
+      contents:[{role:"user",parts:[{text:prompt}]}],
+      generationConfig:{responseMimeType:"application/json"}
+    })
+  });
+  const payload=await response.json().catch(()=>({}));
+  if(!response.ok){
+    const detail=payload.error?.message||`API request failed (${response.status})`;
+    throw new Error(detail);
+  }
+  const output=(payload.candidates||[]).flatMap(x=>x.content?.parts||[]).map(x=>x.text||"").join("");
+  if(!output)throw new Error("Gemini did not return analysis text. Try a shorter transcript.");
+  let parsed;
+  try{parsed=JSON.parse(output)}catch(e){throw new Error("The AI response was not valid JSON. Try again.")}
+  if(!parsed||typeof parsed!=="object"||Array.isArray(parsed))throw new Error("Unexpected analysis response.");
+  return parsed;
+}
+
+function section(title,items,render){
+  if(!items||!items.length)return null;
+  const s=el("div","card sec");s.appendChild(el("h2",null,title));
+  const g=el("div","grid");items.forEach(i=>g.appendChild(render(i)));s.appendChild(g);return s}
+function item(h,body,quote,tag){
+  const d=el("div","item");
+  if(tag)d.appendChild(el("div","fmt",tag));
+  d.appendChild(el("h3",null,h));
+  if(body)d.appendChild(el("p",null,body));
+  if(quote)d.appendChild(el("p","q","“"+quote+"”"));
+  return d}
+
+function render(r){
+  const box=$("res");box.textContent="";
+  if(r.summary){const c=el("div","card sec");c.appendChild(el("h2",null,"What these calls are telling us"));c.appendChild(el("p",null,r.summary));c.lastChild.style.cssText="margin:0;line-height:1.6";box.appendChild(c)}
+  [section("Pain points",r.pain_points,i=>item(i.theme,i.detail,i.quote)),
+   section("Objections",r.objections,i=>item(i.theme,i.detail,i.quote)),
+   section("What they want",r.desires,i=>item(i.theme,i.detail,i.quote))].forEach(s=>s&&box.appendChild(s));
+  if(r.phrases&&r.phrases.length){const c=el("div","card sec");c.appendChild(el("h2",null,"Words prospects use"));r.phrases.forEach(p=>c.appendChild(el("span","chip","“"+p+"”")));box.appendChild(c)}
+  const ci=section("Content ideas",r.content_ideas,i=>item(i.title,i.angle,i.hook,i.format));
+  if(ci)box.appendChild(ci);
+  $("out").style.display="block";
+  $("out").scrollIntoView({behavior:"smooth"})}
+
+function toText(r){
+  const L=[];const add=(t,a,f)=>{if(a&&a.length){L.push("\n"+t.toUpperCase());a.forEach(x=>L.push("- "+f(x)))}};
+  L.push("ALCOMY CALL INSIGHTS\n"+(r.summary||""));
+  add("Pain points",r.pain_points,i=>`${i.theme}: ${i.detail||""} ("${i.quote||""}")`);
+  add("Objections",r.objections,i=>`${i.theme}: ${i.detail||""} ("${i.quote||""}")`);
+  add("What they want",r.desires,i=>`${i.theme}: ${i.detail||""} ("${i.quote||""}")`);
+  add("Words prospects use",r.phrases,p=>p);
+  add("Content ideas",r.content_ideas,i=>`[${i.format}] ${i.title}: ${i.angle||""} Hook: ${i.hook||""}`);
+  return L.join("\n")}
+
+$("go").onclick=async()=>{
+  const t=$("txt").value.trim();
+  if(!t){$("msg").textContent="Paste at least one call first.";return}
+  const key=$("apiKey").value.trim();
+  if(!key){$("msg").textContent="Enter your Gemini API key above first.";$("apiKey").focus();return}
+  const b=$("go");b.disabled=true;$("msg").className="";$("msg").textContent="Reading the calls…";
+  const prompt=`You analyze cold call scripts/transcripts for Alcomy, care facility management software (medication management/MARs, ADLs and care logs, documents and licensing, tasks, staff communication) sold to RCFE, ARF, IDD and residential care home owners and operators.
+Extract ONLY ideas, problems, objections and wishes expressed by the PROSPECT (the person being called), not claims made by the sales rep. If speakers are unlabeled, infer carefully and skip anything unclear. Quotes must be short, verbatim prospect words (under 20 words). Never invent quotes or facts.
+Audience for content: ${$("aud").value}.
+Return ONLY JSON, no markdown fences, with this shape:
+{"summary":"3-4 sentences on the main themes across calls","pain_points":[{"theme":"","detail":"","quote":""}],"objections":[{"theme":"","detail":"","quote":""}],"desires":[{"theme":"","detail":"","quote":""}],"phrases":["short phrases prospects use for their problems"],"content_ideas":[{"format":"Blog | Short video | Email | Social post | Podcast topic | Case study","title":"","angle":"why it matters to this buyer","hook":"opening line in the buyer’s own language"}]}
+Give 3-6 items per list and 6-8 content ideas. Omit a list item if the transcripts don’t support it.
+TRANSCRIPTS:
+${t.slice(0,60000)}`;
+  try{
+    const r=await analyzeWithGemini(prompt,key);
+    last=r;render(r);$("msg").textContent=""
+  }catch(e){
+    $("msg").className="err";
+    $("msg").textContent="Analysis failed: "+(e?.message||"Unknown error");
+  }finally{b.disabled=false}};
+
+$("dl").onclick=()=>{
+  if(!last)return;
+  const blob=new Blob([toText(last)],{type:"text/plain;charset=utf-8"});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a");
+  a.href=url;a.download="alcomy-call-insights.txt";document.body.appendChild(a);a.click();a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+};
+</script>
+</body>
+</html>
